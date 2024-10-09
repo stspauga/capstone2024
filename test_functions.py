@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import string
 import nltk
-from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
+from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords, cmudict
 
 nltk.download('cmudict')
