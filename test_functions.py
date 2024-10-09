@@ -5,6 +5,7 @@ import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords, cmudict
 from functionwords import FunctionWords
+from collections import Counter
 
 nltk.download('cmudict')
 nltk.download('punkt_tab')
@@ -12,7 +13,7 @@ nltk.download('stopwords')
 
 cmu_dictionary = cmudict.dict()
 
-def average_word_length(text):
+def clear_punc_stopwords_and_digits(text):
     # the .maketrans method takes three parameters
     # and creates a hashmap between two strings
     # the first is what strings it would like to replace
@@ -43,13 +44,17 @@ def average_word_length(text):
     # improving processing efficiency and, often, accuracy.
     stop = stopwords.words('english')
     # filtering out the stopwords
-    filtered_tokens = [word for word in tokens if word.lower() not in stop]
-    # print(filtered_tokens)
+    return [word for word in tokens if word.lower() not in stop]
+
+# LEXICAL FEATURES
+
+def average_word_length(text):
+    filtered_tokens = clear_punc_stopwords_and_digits(text)
 
     # return average work length
     return np.average([len(word) for word in filtered_tokens])
 
-testString1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
+# testString1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
 # print(average_word_length(testString1))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
@@ -92,14 +97,8 @@ def average_sentence_length_by_word(text):
 #------------------------------------------------------------------------------------------------------------------------------------------
 
 def average_syllables_per_word(text):
-    # hash map of strings/chars to delete 
-    table = text.maketrans("","",string.punctuation) 
-    # implementation of above table on variable text
-    text = text.translate(table)    
-    tokens = word_tokenize(text, language='english')
-    stop = stopwords.words('english')
-    # filter out stop words
-    filtered_tokens = [word for word in tokens if word.lower() not in stop]
+    filtered_tokens = clear_punc_stopwords_and_digits(text)
+
     syllable_counts = []
     for word in filtered_tokens:
         if word in cmu_dictionary:
@@ -140,18 +139,44 @@ def count_functional_words(text):
     return count
 
 # testString4 = """The gentle rustle of autumn leaves underfoot, the crisp breeze that whispers through the trees, 
-#                 and the golden hues that adorn the landscape mark the transition of seasons. 
-#                 Autumn is a time of reflection, where nature prepares for rest, 
-#                 shedding what is no longer needed to make way for renewal. The days grow shorter, 
-#                 inviting moments of warmth by the fire, with the scent of cinnamon and apple filling the air. 
-#                 It's a season that invites balance, with its equal moments of beauty and calm, 
-#                 a reminder of the cycles of life that continue on, year after year."""
+#                  and the golden hues that adorn the landscape mark the transition of seasons. 
+#                  Autumn is a time of reflection, where nature prepares for rest, 
+#                  shedding what is no longer needed to make way for renewal. The days grow shorter, 
+#                  inviting moments of warmth by the fire, with the scent of cinnamon and apple filling the air. 
+#                  It's a season that invites balance, with its equal moments of beauty and calm, 
+#                  a reminder of the cycles of life that continue on, year after year."""
 
 # print(count_functional_words(testString4))
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
+# VOCABULARY RICHNESS FEATURES
+
+def unique_word_ratio(text):
+    words = word_tokenize(text)
+    # return the set of words which will remove duplicates
+    # and then divide by the number of total words. 
+    return (len(set(words)) / len(words))
+
+# print(unique_word_ratio(testString4))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+def hapax_legomena(text):
+    filtered_tokens = clear_punc_stopwords_and_digits(text)
+    word_count = Counter(filtered_tokens)
+    print(word_count)
+    unique_words = [word for word, count in word_count.items() if count == 1]
+    return len(unique_words)
+
+# print(hapax_legomena(testString4))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+
 
     
+        
 
 
+    
