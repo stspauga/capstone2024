@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import string
 import nltk
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
 from nltk.corpus import stopwords
 nltk.download('punkt_tab')
 nltk.download('stopwords')
@@ -45,8 +45,43 @@ def average_word_length(str):
     # return average work length
     return np.average([len(word) for word in filtered_tokens])
 
-testString = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
-print(average_word_length(testString))
+
+# testString1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
+# print(average_word_length(testString1))
+
+def average_sentence_length_by_character(str):
+    # simply separates the string into sentences
+    tokens = sent_tokenize(str)
+    print(tokens)
+    # return the average sentence length by character
+    return np.average([len(token) for token in tokens])
+
+# testString2 = "On a $50,000 mortgage. of 30 years at 8 percent. the monthly payment would be $366.88. another sentence here. a short one."
+# print(average_sentence_length_by_character(testString2))
+
+
+def average_sentence_length_by_word(str):
+    # take the str and separate them into an array of sentences
+    sentence_list = sent_tokenize(str)
+    # instantiate an empty array to hold the number of words for each sentence.
+    sentence_length_list = []
+    # loop through array of sentences and count the word length and append
+    # that number to sentence_length_list
+    for sentence in sentence_list:
+        tokens = word_tokenize(sentence)
+        sentence_length_list.append(len(tokens))
+    # return the average of the numbers contained in sentence_length_list
+    return np.average(sentence_length_list)
+        
+# testString3 = """The quiet hum of the city blended with the rhythmic footsteps of 
+#                 people hurrying through the streets, each absorbed in their own world. 
+#                 Above, the sky was painted in soft hues of pink and orange, signaling the end of another day. 
+#                 As the sun dipped below the horizon, the lights of the buildings flickered on, 
+#                 illuminating the paths of those who still had miles to go before rest. 
+#                 In the midst of the bustle, a gentle breeze carried the faint scent of fresh rain, 
+#                 offering a brief moment of calm in the ever-moving city.
+#                 """
+# print(average_sentence_length_by_word(testString3))
 
 
     
