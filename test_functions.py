@@ -4,6 +4,7 @@ import string
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords, cmudict
+from functionwords import FunctionWords
 
 nltk.download('cmudict')
 nltk.download('punkt_tab')
@@ -124,6 +125,31 @@ def punctuation_count(text):
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
+def count_functional_words(text):
+    # FunctionWords library is a comprehensive list
+    # of functional english words
+    fw = FunctionWords(function_words_list='english')     
+    count = 0  
+    # fw.transform() returns an array and each element corresponds
+    # to the array of functional words in fw.get_feature_names() --> "['a', 'about', 'above', 'according', 'accordingly', 'across' ... "
+    # if the word 'according' is found in the text, the element at index 4 in the array returned by fw.transform(text) will increase by 1
+    # and so on
+    for i in fw.transform(text):
+        if i > 0:
+            count += 1
+    return count
+
+# testString4 = """The gentle rustle of autumn leaves underfoot, the crisp breeze that whispers through the trees, 
+#                 and the golden hues that adorn the landscape mark the transition of seasons. 
+#                 Autumn is a time of reflection, where nature prepares for rest, 
+#                 shedding what is no longer needed to make way for renewal. The days grow shorter, 
+#                 inviting moments of warmth by the fire, with the scent of cinnamon and apple filling the air. 
+#                 It's a season that invites balance, with its equal moments of beauty and calm, 
+#                 a reminder of the cycles of life that continue on, year after year."""
+
+# print(count_functional_words(testString4))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
 
 
     
