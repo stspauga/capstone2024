@@ -3,27 +3,30 @@ import pandas as pd
 import string
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize, RegexpTokenizer
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, cmudict
+
+nltk.download('cmudict')
 nltk.download('punkt_tab')
 nltk.download('stopwords')
 
+cmu_dictionary = cmudict.dict()
 
-def average_word_length(str):
+def average_word_length(text):
     # the .maketrans method takes three parameters
     # and creates a hashmap between two strings
     # the first is what strings it would like to replace
     # the second is what string it would like to replace the original strings with
     # and third is what strings to delete
     # string.punctuation includes all punctuation
-    table = str.maketrans("","",string.punctuation) 
+    table = text.maketrans("","",string.punctuation) 
 
     # .translate implements the mapping of the variable table onto the variable str
-    str = str.translate(table)    
-    # print(str)
+    text = text.translate(table)    
+    # print(text)
 
     # word_tokenize simply separates the string
     # into an array of tokens or words
-    tokens = word_tokenize(str, language='english')
+    tokens = word_tokenize(text, language='english')
     # print(tokens)
 
     # removing numbers
@@ -45,12 +48,14 @@ def average_word_length(str):
     # return average work length
     return np.average([len(word) for word in filtered_tokens])
 
-# testString1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
+testString1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
 # print(average_word_length(testString1))
 
-def average_sentence_length_by_character(str):
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+def average_sentence_length_by_character(text):
     # simply separates the string into sentences
-    tokens = sent_tokenize(str)
+    tokens = sent_tokenize(text)
     print(tokens)
     # return the average sentence length by character
     return np.average([len(token) for token in tokens])
@@ -58,10 +63,11 @@ def average_sentence_length_by_character(str):
 # testString2 = "On a $50,000 mortgage. of 30 years at 8 percent. the monthly payment would be $366.88. another sentence here. a short one."
 # print(average_sentence_length_by_character(testString2))
 
+#------------------------------------------------------------------------------------------------------------------------------------------
 
-def average_sentence_length_by_word(str):
+def average_sentence_length_by_word(text):
     # take the str and separate them into an array of sentences
-    sentence_list = sent_tokenize(str)
+    sentence_list = sent_tokenize(text)
     # instantiate an empty array to hold the number of words for each sentence.
     sentence_length_list = []
     # loop through array of sentences and count the word length and append
@@ -81,6 +87,43 @@ def average_sentence_length_by_word(str):
 #                 offering a brief moment of calm in the ever-moving city.
 #                 """
 # print(average_sentence_length_by_word(testString3))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+def average_syllables_per_word(text):
+    # hash map of strings/chars to delete 
+    table = text.maketrans("","",string.punctuation) 
+    # implementation of above table on variable text
+    text = text.translate(table)    
+    tokens = word_tokenize(text, language='english')
+    stop = stopwords.words('english')
+    # filter out stop words
+    filtered_tokens = [word for word in tokens if word.lower() not in stop]
+    syllable_counts = []
+    for word in filtered_tokens:
+        if word in cmu_dictionary:
+            pronounciations = cmu_dictionary[word]
+            for i in pronounciations:
+                syllable_count = sum(1 for j in i if j[-1].isdigit())
+                syllable_counts.append(syllable_count)
+    return np.average(syllable_counts)
+
+
+# print(average_syllables_per_word(testString1))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
+def punctuation_count(text):
+    count = 0
+    for i in text:
+        if i in string.punctuation:
+            count += 1
+    return count
+    
+# print(punctuation_count(testString1))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
+
 
 
     
