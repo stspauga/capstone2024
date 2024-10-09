@@ -45,6 +45,7 @@ def average_word_length(str):
     # return average work length
     return np.average([len(word) for word in filtered_tokens])
 
+
 # testString1 = "On a $50,000 mortgage of 30 years at 8 percent, the monthly payment would be $366.88."
 # print(average_word_length(testString1))
 
