@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import string
+import math
+import test_strings
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk.corpus import stopwords, cmudict
@@ -173,10 +175,40 @@ def hapax_legomena(text):
 
 #------------------------------------------------------------------------------------------------------------------------------------------
 
+def yules_characteristic_k(text):
+    # Yules Characteristic K is 10^4 * (SUM(f(f - 1)) /N^2)
+    # f being the number of times a word appears and N being the total number
+    # of words in a text
+    # so a low number indicates a good variety of words
+    # and a high number indicates that a few words are dominating the text
+    filtered_tokens = clear_punc_stopwords_and_digits(text)
+    n_squared = len(filtered_tokens) ** 2
+    total_sum = 0
+    # print(len(filtered_tokens))
+    word_count = Counter(filtered_tokens)
+    # print(word_count)
+    for element in word_count.values():
+        total_sum = total_sum + (element * (element - 1))
+    return (10 ** 4) * (total_sum / n_squared)
 
+# print(yules_characteristic_k(testString4))
 
-    
+#------------------------------------------------------------------------------------------------------------------------------------------
         
+def brunets_measure_w(text):
+    # Brunet's Measure W is generally for much longer texts
+    # as a short essay will product a negative number which 
+    # is not to be expected. The formula is as follow
+    # W = (V - N) / logN 
+    # V being the number of unique words
+    # and N being the number of total words
+    filtered_tokens = clear_punc_stopwords_and_digits(text)
+    N = len(filtered_tokens)
+    V = len(set(filtered_tokens))
+    return (V - N) / math.log(N)
 
+# print(brunets_measure_w(test_strings.testString5))
+
+#------------------------------------------------------------------------------------------------------------------------------------------
 
     
